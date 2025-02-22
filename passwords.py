@@ -73,7 +73,7 @@ class UserManager:
         UI.print_heading("login")
         username = input(BLUE + "👤 Enter username: " + RESET)
         if username.lower() == "back":
-            return None
+            Application.run(self)
         password = self.get_password(BLUE + "🔑 Enter password: " + RESET)
         if username in self.users and self.users[username] == self.encrypt_password(password):
             print("\n" + GREEN + "✅ Login successful! Welcome back!" + RESET)
@@ -85,7 +85,7 @@ class UserManager:
     def delete_account(self):
         username = input(YELLOW + "🗑️  Enter username: " + RESET)
         if username.lower() == "back":
-            return
+            Application.run()
         password = input(YELLOW + "🔑  Enter password: " + RESET)
         if username in self.users and self.users[username] == self.encrypt_password(password):
             del self.users[username]
@@ -112,20 +112,28 @@ class PasswordManager:
     def add_password(self, username):
         os.system("cls")
         UI.print_heading("addpass")
-        platform = input(GREEN + "🌐 Enter platform name: " + RESET)
+        platform = (input(GREEN + "🌐 Enter platform name: " + RESET)).lower()
         platform_username = input(GREEN + "👤 Enter username: " + RESET)
         email = input(GREEN + "📧 Enter email: " + RESET)
-        password = input(GREEN + "🔒 Enter password: " + RESET)
-        if username not in self.passwords:
-            self.passwords[username] = {}
-        self.passwords[username][platform] = {"username": platform_username, "email": email, "password": password}
-        self.save_passwords()
-        print(GREEN + "✅ Password saved!" + RESET)
+        password = UserManager.get_password(GREEN + "🔒 Enter password: " + RESET)
+        confirm = input(YELLOW + f"\nYour password is: {GREEN}{password}{YELLOW}. Do you confirm this password?  " + RESET)
+        if confirm.lower() == "yes" or confirm.lower() == "y":
+            if username not in self.passwords:
+                self.passwords[username] = {}
+                self.passwords[username][platform] = {"username": platform_username, "email": email, "password": password}
+                self.save_passwords()
+                print(GREEN + "✅ Password saved!" + RESET)
+        elif confirm.lower() == "no" or confirm.lower() == "n":
+            input(RED + "❌ Please Enter password again! Press enter to continue." + RESET)
+            self.signup()
+        else:
+            input(RED + "❌ Invalid Input!" + RESET)
+            self.signup()
 
     def access_passwords(self, username):
         os.system("cls")
         UI.print_heading("accesspass")
-        platform = input(CYAN + "🔎 Enter platform name: " + RESET)
+        platform = (input(CYAN + "🔎 Enter platform name: " + RESET)).lower()
         if username in self.passwords and platform in self.passwords[username]:
             creds = self.passwords[username][platform]
             print(CYAN + f"Platform: {platform}\nUsername: {creds['username']}\nEmail: {creds['email']}\nPassword: {creds['password']}" + RESET)
@@ -135,7 +143,7 @@ class PasswordManager:
     def delete_password(self, username):
         os.system("cls")
         UI.print_heading("delpass")
-        platform = input(YELLOW + "🗑️ Enter platform name to delete: " + RESET)
+        platform = (input(YELLOW + "🗑️ Enter platform name to delete: " + RESET)).lower()
         if username in self.passwords and platform in self.passwords[username]:
             del self.passwords[username][platform]
             self.save_passwords()
@@ -146,7 +154,7 @@ class PasswordManager:
     def edit_password(self, username):
         os.system("cls")
         UI.print_heading("editpass")
-        platform = input(YELLOW + "✏️ Enter platform name to edit: " + RESET)
+        platform = (input(YELLOW + "✏️ Enter platform name to edit: " + RESET)).lower()
         if username in self.passwords and platform in self.passwords[username]:
             platform_username = input(YELLOW + "👤 Enter new username: " + RESET)
             password = input(YELLOW + "🔒 Enter new password: " + RESET)
@@ -164,7 +172,7 @@ class PasswordManager:
         if username in self.passwords:
             for platform in self.passwords[username]:
                 i+=1
-                print(CYAN + f"{i}. {platform}" + RESET)
+                print(CYAN + f"{i}. {platform.title()}" + RESET)
         else:
             print(RED + "❌ No saved platforms found!" + RESET)
 
