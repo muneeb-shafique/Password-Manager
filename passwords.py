@@ -44,14 +44,23 @@ class UserManager:
             self.signup()
         if username in self.users:
             print(RED + "❌ Username already exists! Try another." + RESET)
-            return
-        password = input(GREEN + "🔒  Enter password: " + RESET)
+            self.signup()
+        password = UserManager.get_password(GREEN + "🔒  Enter password: " + RESET)
         if not password:
             input(RED + "❌ Please enter a valid password." + RESET)
             self.signup()
-        self.users[username] = self.encrypt_password(password)
-        self.save_users()
-        print("\n" + GREEN + "✅ Signup successful!" + RESET)
+        confirm = input(YELLOW + f"\nYour password is: {GREEN}{password}{YELLOW}. Do you confirm this password?  " + RESET)
+        if confirm.lower() == "yes" or confirm.lower() == "y":
+            self.users[username] = self.encrypt_password(password)
+            self.save_users()
+            print("\n" + GREEN + "✅ Signup successful!" + RESET)
+        elif confirm.lower() == "no" or confirm.lower() == "n":
+            input(RED + "❌ Please Enter password again! Press enter to continue." + RESET)
+            self.signup()
+        else:
+            input(RED + "❌ Invalid Input!" + RESET)
+            self.signup()
+
 
     @staticmethod
     def get_password(txt):
