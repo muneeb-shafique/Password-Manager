@@ -67,6 +67,19 @@ class UserManager:
         return pwinput.pwinput(prompt=txt)
 
 
+    def list_users(self):
+        os.system("cls")
+        UI.print_heading("listusers")
+        if self.users:
+            print(CYAN,end="")
+            for i, user in enumerate(self.users.keys(), 1):
+                print(f"{i}. {user}")
+            print(RESET)
+        else:
+            print(RED + "❌ No users found!" + RESET)
+        input("\nPress Enter to continue...")
+
+
     def login(self):
         os.system("cls")
         UI.print_heading("login")
@@ -87,13 +100,18 @@ class UserManager:
         username = input(YELLOW + "🗑️  Enter username: " + RESET)
         if username.lower() == "back":
             return
-        password = input(YELLOW + "🔑  Enter password: " + RESET)
+        password = self.get_password(YELLOW + "🔑  Enter password: " + RESET)
         if username in self.users and self.users[username] == self.encrypt_password(password):
             confirm = input(YELLOW + f"\nAll your saved passwords will be removed. Are you sure you want to continue?  " + RESET)
             if confirm.lower() == "yes" or confirm.lower() == "y":
                 del self.users[username]
                 self.save_users()
-                print(GREEN + "✅ Account deleted successfully!" + RESET)
+            elif confirm.lower() == "no" or confirm.lower() == "n":
+                input(RED + "❌ Deletion of Account canceled." + RESET)
+                self.signup()
+            else:
+                input(RED + "❌ Invalid Input!" + RESET)
+                self.signup()
         else:
             print(RED + "❌ Invalid username or password!" + RESET)
 
@@ -222,6 +240,10 @@ class UI:
             print(GREEN + "=" * 35)
             print("⭐ Add Password ⭐".center(35))
             print("=" * 35 + RESET)
+        elif txt == "listusers":
+            print(GREEN + "=" * 35)
+            print("⭐ List of Users ⭐".center(35))
+            print("=" * 35 + RESET)
 
 
 class Application:
@@ -263,8 +285,9 @@ class Application:
             UI.print_heading("main")
             print(CYAN + "1.  Signup" + RESET)
             print(CYAN + "2.  Login" + RESET)
-            print(CYAN + "3.  Delete Account" + RESET)
-            print(CYAN + "4.  Exit" + RESET)
+            print(CYAN + "3.  List Users" + RESET)
+            print(CYAN + "4.  Delete Account" + RESET)
+            print(CYAN + "5.  Exit" + RESET)
             choice = input(MAGENTA + "👉 Enter your choice: " + RESET)
             if choice == "1":
                 self.user_manager.signup()
@@ -273,8 +296,10 @@ class Application:
                 if username:
                     self.password_menu(username)
             elif choice == "3":
-                self.user_manager.delete_account()
+                self.user_manager.list_users()
             elif choice == "4":
+                self.user_manager.delete_account()
+            elif choice=="5":
                 print(GREEN + "🚪 Exiting... Goodbye!" + RESET)
                 break
             else:
