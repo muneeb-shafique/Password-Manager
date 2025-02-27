@@ -43,7 +43,7 @@ class UserManager:
             input(RED + "❌ Please enter a valid username." + RESET)
             self.signup()
         if username in self.users:
-            print(RED + "❌ Username already exists! Try another." + RESET)
+            input(RED + "❌ Username already exists! Try another." + RESET)
             self.signup()
         password = UserManager.get_password(GREEN + "🔒  Enter password: " + RESET)
         if not password:
@@ -67,13 +67,12 @@ class UserManager:
         return pwinput.pwinput(prompt=txt)
 
 
-
     def login(self):
         os.system("cls")
         UI.print_heading("login")
         username = input(BLUE + "👤 Enter username: " + RESET)
         if username.lower() == "back":
-            Application.run(self)
+            return
         password = self.get_password(BLUE + "🔑 Enter password: " + RESET)
         if username in self.users and self.users[username] == self.encrypt_password(password):
             print("\n" + GREEN + "✅ Login successful! Welcome back!" + RESET)
@@ -83,14 +82,18 @@ class UserManager:
             return None
 
     def delete_account(self):
+        os.system("cls")
+        UI.print_heading("delacc")
         username = input(YELLOW + "🗑️  Enter username: " + RESET)
         if username.lower() == "back":
-            Application.run()
+            return
         password = input(YELLOW + "🔑  Enter password: " + RESET)
         if username in self.users and self.users[username] == self.encrypt_password(password):
-            del self.users[username]
-            self.save_users()
-            print(GREEN + "✅ Account deleted successfully!" + RESET)
+            confirm = input(YELLOW + f"\nAll your saved passwords will be removed. Are you sure you want to continue?  " + RESET)
+            if confirm.lower() == "yes" or confirm.lower() == "y":
+                del self.users[username]
+                self.save_users()
+                print(GREEN + "✅ Account deleted successfully!" + RESET)
         else:
             print(RED + "❌ Invalid username or password!" + RESET)
 
@@ -198,6 +201,10 @@ class UI:
         elif txt == "showplat":
             print(GREEN + "=" * 45)
             print("⭐ List of Platforms Saved ⭐".center(45))
+            print("=" * 45 + RESET)
+        elif txt == "delacc":
+            print(GREEN + "=" * 45)
+            print("⭐ Delete Account ⭐".center(45))
             print("=" * 45 + RESET)
         elif txt == "editpass":
             print(GREEN + "=" * 35)
