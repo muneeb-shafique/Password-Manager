@@ -5,5 +5,25 @@
     "Jawad": "a4bcf2b5c5ac188451e1388208b5b89420d268fa5f14a5ed8d372586928183a5",
     "mnb": "75644e98e9593afba45907a1298e876e64e30e2d30251802cc1bd9e763ce9715",
     "Bilal": "19323e09167f5273a40087dab13b8232868c00442c0944f9773688aac58ac721",
-    "Shaka": "230da70614622d9335e21470edb0ffaf8221833bf93074d36952b42b10bc421a"
+    "Shaka": "230da70614622d9335e21470edb0ffaf8221833bf93074d36952b42b10bc421a",
+    "eishakutti": {
+        "password": "f46d93be46b253b6dc8a76882542ced65191eba9327e170a221a3bea04e76c85",
+        "security_question": "eisha kiski kutti hai? naam likho",
+        "security_answer": "muneeb"
+    },
+    "Singhi": {
+        "password": "a03deddad29212f39fd6c5ac476c3e0496b897074105b695076116199d6c6797",
+        "security_question": "Who is singhi's Father?",
+        "security_answer": "muneeb"
+    },
+    "chasna": {
+        "password": "8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d",
+        "security_question": "Who is eisha",
+        "security_answer": "gashti"
+    },
+    "fuck": {
+        "password": "6ac3c336e4094835293a3fed8a4b5fedde1b5e2626d9838fed50693bba00af0e",
+        "security_question": "who is eisha",
+        "security_answer": "gashti"
+    }
 }

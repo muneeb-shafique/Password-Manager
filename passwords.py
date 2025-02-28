@@ -33,6 +33,7 @@ class UserManager:
     def encrypt_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
 
+
     def signup(self):
         os.system("cls")
         UI.print_heading("signup")
@@ -51,7 +52,9 @@ class UserManager:
             self.signup()
         confirm = input(YELLOW + f"\nYour password is: {GREEN}{password}{YELLOW}. Do you confirm this password?  " + RESET)
         if confirm.lower() == "yes" or confirm.lower() == "y":
-            self.users[username] = self.encrypt_password(password)
+            security_question = input(YELLOW + "🔐 Set a security question (e.g., Your pet's name?): " + RESET)
+            security_answer = input(YELLOW + "🔑 Answer: " + RESET).lower()
+            self.users[username] = {"password": self.encrypt_password(password), "security_question": security_question, "security_answer": security_answer}
             self.save_users()
             print("\n" + GREEN + "✅ Signup successful!" + RESET)
         elif confirm.lower() == "no" or confirm.lower() == "n":
@@ -83,16 +86,41 @@ class UserManager:
     def login(self):
         os.system("cls")
         UI.print_heading("login")
+        print("[NOTE]: Press F Key in case of forgetting password.")
         username = input(BLUE + "👤 Enter username: " + RESET)
+        if username.lower()=="f":
+            self.forget_password()
         if username.lower() == "back":
             return
         password = self.get_password(BLUE + "🔑 Enter password: " + RESET)
-        if username in self.users and self.users[username] == self.encrypt_password(password):
+        if "password" not in self.users[username]:
+            input("\n⚠️ User data is corrupted. Contact support!")
+            return None
+        if username in self.users and self.users[username]["password"] == self.encrypt_password(password):
             print("\n" + GREEN + "✅ Login successful! Welcome back!" + RESET)
             return username
         else:
             input("\n" + RED + "❌ Invalid username or password!" + RESET)
             return None
+
+    def forget_password(self):
+        os.system("cls")
+        UI.print_heading("forgetpass")
+        username = input(YELLOW + "👤 Enter your username: " + RESET)
+        if username in self.users:
+            print(YELLOW + "Q: "+ self.users[username]["security_question"] + RESET)
+            answer = input(YELLOW + "🔑 Answer: " + RESET).lower()
+            if answer == self.users[username]["security_answer"]:
+                new_password = UserManager.get_password(GREEN + "🔒 Enter new password: " + RESET)
+                self.users[username]["password"] = self.encrypt_password(new_password)
+                self.save_users()
+                input(GREEN + "✅ Password reset successful!" + RESET)
+            else:
+                input(RED + "❌ Incorrect answer!" + RESET)
+        else:
+            input(RED + "❌ Username not found!" + RESET)
+        self.login()
+        
 
     def delete_account(self):
         os.system("cls")
@@ -209,9 +237,9 @@ class UI:
             print("⭐ Signup Form ⭐".center(25))
             print("=" * 25 + RESET)
         elif txt == "login":
-            print(GREEN + "=" * 25)
-            print("⭐ Login Form ⭐".center(25))
-            print("=" * 25 + RESET)
+            print(GREEN + "=" * 55)
+            print("⭐ Login Form ⭐".center(55))
+            print("=" * 55 + RESET)
         elif txt == "passmenu":
             print(GREEN + "=" * 35)
             print("⭐ Password Manager ⭐".center(35))
@@ -243,6 +271,10 @@ class UI:
         elif txt == "listusers":
             print(GREEN + "=" * 35)
             print("⭐ List of Users ⭐".center(35))
+            print("=" * 35 + RESET)
+        elif txt == "forgetpass":
+            print(GREEN + "=" * 35)
+            print("⭐ Forget Password ⭐".center(35))
             print("=" * 35 + RESET)
 
 
